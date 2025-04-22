@@ -6,6 +6,9 @@ from django.views.generic import ListView,DetailView,FormView,CreateView,UpdateV
 from django.utils import timezone
 from .forms import ContactForm,PostForm,PostForm2 # define in forms.py
 from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
+from django.http import HttpResponse
+
+
 # Create your views here.
 
 # "1" function base views
@@ -110,3 +113,5 @@ class PostDeleteView(LoginRequiredMixin,DeleteView):
     model = Post
     success_url = "/blog/post/"
     #success_url = reverse_lazy("author-list")
+    
+

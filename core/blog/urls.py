@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
@@ -7,9 +7,9 @@ from django.views.generic.base import RedirectView
 app_name = "blog" # related to path "5"
 
 urlpatterns = [
-    # function base views
+    # # function base views
     path("1", views.indexView, name="function base view"), # def
-    # class base views
+    # # class base views
     path("2", TemplateView.as_view(template_name="testurl.html",extra_context={"name": "Class"}),name="TemplateView"), # no views
     path("3",views.IndexView.as_view(), name="class base view"), # TemplateView
     path("4",RedirectView.as_view(url="https://www.google.com/"),name="RedirectView go to url",), # no views defined
@@ -23,4 +23,6 @@ urlpatterns = [
     path('post/<int:pk>/edit/',views.PostEditView.as_view(), name="post-Edit-UpdateView"), # UpdateView
     path('post/<int:pk>/delete/',views.PostDeleteView.as_view(), name="post-DeleteView"), # DeleteView
     
+    # API file address
+    path('api/v1/', include('blog.api.v1.urls')), # api address blog/api/v1
 ]

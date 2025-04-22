@@ -38,8 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework', # Django rest framework
+    'rest_framework.authtoken',
     'accounts',
     'blog',
+    'django_filters',
+    'drf_yasg',
+    'rest_framework_simplejwt',
+    'mail_templated',
+    'djoser',
+    
 ]
 
 MIDDLEWARE = [
@@ -142,3 +150,36 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # user manager config
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# restframework settings
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
+# email
+
+#EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# export of : 
+# Content-Type: text/plain; charset="utf-8"
+# MIME-Version: 1.0
+# Content-Transfer-Encoding: 7bit
+# Subject: Subject here
+# From: from@example.com
+# To: to@example.com
+# Date: Mon, 21 Apr 2025 11:21:17 -0000
+# Message-ID: <174523447712.473.8992284961543939932@25612f9988f6>
+# Here is the message.
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp4dev'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 25
+
