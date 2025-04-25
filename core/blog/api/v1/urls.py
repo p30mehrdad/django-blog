@@ -1,18 +1,18 @@
-from django.urls import path,include
+from django.urls import path, include
 from . import views
+
 # DefaultRouter
-from rest_framework.routers import DefaultRouter,SimpleRouter
+from rest_framework.routers import DefaultRouter, SimpleRouter
+
 router = DefaultRouter()
-router.register('post',views.PostModelViewSet,basename='post')
-router.register('category',views.CategoryModelViewSet,basename='category')
+router.register("post", views.PostModelViewSet, basename="post")
+router.register("category", views.CategoryModelViewSet, basename="category")
 urlpatterns = router.urls
 
-app_name = "api-v1" 
+app_name = "api-v1"
 
 
-
-
-'''
+"""
 urlpatterns = [
     # FBV URLS:
     # path('post/',views.postList, name="post-list"), 
@@ -28,4 +28,4 @@ urlpatterns = [
     # path('',include(router.urls))
 ] 
 urlpatterns += router.urls
-'''
+"""

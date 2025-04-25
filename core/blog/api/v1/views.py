@@ -1,42 +1,65 @@
-from rest_framework.decorators import api_view,permission_classes
-from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly,IsAdminUser
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+    IsAdminUser,
+)
 from rest_framework.response import Response
-from .serializers import PostSerializer,CategorySerializer
-from ...models import Post,Category # ech '.' is back folder
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView,ListAPIView,ListCreateAPIView,GenericAPIView,RetrieveAPIView,DestroyAPIView,UpdateAPIView,RetrieveUpdateAPIView,RetrieveDestroyAPIView,RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    GenericAPIView,
+    RetrieveAPIView,
+    DestroyAPIView,
+    UpdateAPIView,
+    RetrieveUpdateAPIView,
+    RetrieveDestroyAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from rest_framework import mixins
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from .permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+
 from .paginations import DefaultPagination
+from .serializers import PostSerializer, CategorySerializer
+from .permissions import IsOwnerOrReadOnly
+from ...models import Post, Category  # ech '.' is back folder
+
+
 ############### model view set ############
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
-    filter_backends = [DjangoFilterBackend,filters.SearchFilter,filters.OrderingFilter]
-    filterset_fields = ['category', 'author','status']
-    search_fields = ['title', 'content']  # search_fields = ['=username', '=email']
-    ordering_fields = ['published_date']
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = ["category", "author", "status"]
+    search_fields = ["title", "content"]  # search_fields = ['=username', '=email']
+    ordering_fields = ["published_date"]
     pagination_class = DefaultPagination
-    
-    
+
     # @action(methods=["get"],detail=False) # default method is get // detail=False: no need to pk (id or ...)
     # def get_ok(self,request): # http://127.0.0.1:8000/blog/api/v1/post/get_ok/
     #     return Response({'detail':'ok'})
-    
+
+
 class CategoryModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
-################ viewset (post-list & post-detail) ################ 
-'''
+
+################ viewset (post-list & post-detail) ################
+"""
 class PostViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
@@ -65,21 +88,27 @@ class PostViewSet(viewsets.ViewSet):
 
     def destroy(self, request, pk=None):
         pass
-'''
+"""
 ############### class API view [Generic views] #################
+
 
 class PostList(ListCreateAPIView):
     """getting a list of post and creating new post"""
-    permission_classes = [IsAuthenticatedOrReadOnly] # permissions for authenticated
-    serializer_class = PostSerializer # convert json to from for POST method
-    queryset = Post.objects.filter(status=True) # posts = Post.objects.filter(status=True) # jay in queryset migire
+
+    permission_classes = [IsAuthenticatedOrReadOnly]  # permissions for authenticated
+    serializer_class = PostSerializer  # convert json to from for POST method
+    queryset = Post.objects.filter(
+        status=True
+    )  # posts = Post.objects.filter(status=True) # jay in queryset migire
+
 
 class PostDetail(RetrieveUpdateDestroyAPIView):
     """getting details of a post and edit or remove a post"""
+
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
-    queryset = Post.objects.filter(status=True)  
-    
+    queryset = Post.objects.filter(status=True)
+
 
 # with APIView
 '''
@@ -100,7 +129,7 @@ class PostList(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-'''        
+'''
 
 '''
 class PostDetail(APIView):
@@ -126,7 +155,7 @@ class PostDetail(APIView):
         return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)
 '''
 
-#with mixins class
+# with mixins class
 '''
 class PostDetail(GenericAPIView,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin):
     """getting details of a post and edit or remove a post"""
@@ -145,7 +174,7 @@ class PostDetail(GenericAPIView,mixins.RetrieveModelMixin,mixins.UpdateModelMixi
         return self.destroy(request, *args, **kwargs)
 '''
 ############################## function base view #################
-'''
+"""
 @api_view(["GET","POST"])
 @permission_classes([IsAuthenticated]) # important: NEED set after api_view ### [IsAuthenticatedOrReadOnly] [IsAdminUser]
 def postList(request):
@@ -158,7 +187,7 @@ def postList(request):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-'''
+"""
 
 """
 @api_view(["GET","PUT","DELETE"])
@@ -176,9 +205,9 @@ def postDetail(request,id):
     elif request.method == "DELETE":
         post.delete()
         return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)
-"""       
+"""
 ############################## 404 (try & except) #############################
-'''
+"""
 @api_view()
 def postDetail(request,id):
     try:
@@ -188,5 +217,4 @@ def postDetail(request,id):
         return Response(serializer.data)
     except Post.DoesNotExist:
         return Response({"detail":"Post does not exist"},status=status.HTTP_404_NOT_FOUND) 
-'''
-
+"""
