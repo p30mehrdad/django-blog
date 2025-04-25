@@ -132,7 +132,3 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = "/blog/post/"
     # success_url = reverse_lazy("author-list")
-
-
-class PostListApiView(TemplateView):
-     template_name = 'blog/post_list_api.html'
