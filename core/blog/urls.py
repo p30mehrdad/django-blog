@@ -58,4 +58,7 @@ urlpatterns = [
     ),  # DeleteView
     # API file address
     path("api/v1/", include("blog.api.v1.urls")),  # api address blog/api/v1
+    
+    path("post/api/", views.PostListApiView.as_view(), name="post-list-api"),
+    
 ]
