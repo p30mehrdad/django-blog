@@ -6,4 +6,4 @@ pip install Faker
 # 12-2 [custom django-admin commands] -> https://docs.djangoproject.com/en/5.2/howto/custom-management-commands/
 # make file To implement the command, edit core/blog/management/commands/insert_data.py 
 docker-compose exec backend sh
-python manage.py insert_data.py
+python manage.py insert_data
