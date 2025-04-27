@@ -53,10 +53,38 @@ docker-compose up
 # go to http://127.0.0.1:8000/accounts/send-email/ , and after 3 sec in terminal print text / print('done sending email')
 
 
+# 15-6 [Task Schedule & Beat] -> https://docs.celeryq.dev/en/latest/userguide/periodic-tasks.html#beat-custom-schedulers
+# we can use Schedule in our project in 3 way
+
+# [beat-1] add to setting CELERY_BEAT_SCHEDULE / name task - address of task function - time of period
+# we must rest worker docker, also need active "beat":
+docker-compose exec backend sh
+celery -A core beat -l INFO
+# export in terminal:
+## [2025-04-27 21:39:57,866: INFO/MainProcess] Task accounts.tasks.sendEmail[475176f1-c554-4389-92c7-4f8dd25a65e9] received
+## worker-1    | [2025-04-27 21:40:00,867: WARNING/ForkPoolWorker-8] done sending email
+# for stop beat:
+docker compose restart backend
 
 
+# [beat-2] open "celery.py" and add decorative "@app.on_after_configure.connect" and function -> https://docs.celeryq.dev/en/latest/userguide/periodic-tasks.html#entries
+# restart worker docker
+docker-compose exec backend sh
+celery -A core beat -l INFO
 
 
+# [beat-3] use Custom scheduler classes -> https://docs.celeryq.dev/en/latest/userguide/periodic-tasks.html#using-custom-scheduler-classes
+docker-compose exec backend sh
+pip install django-celery-beat
+exit
+docker-compose exec worker sh
+pip install django-celery-beat
+# INSTALLED_APPS = ('django_celery_beat',)
+docker-compose exec backend sh
+python manage.py migrate
+celery -A core beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+# go to admin and enter "Periodic tasks" and select "add new Periodic tasks", make new task:
+# each function that created on "tasks.py" loaded and we can select in "Task (registered):" field
 
 
 
