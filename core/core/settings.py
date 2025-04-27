@@ -183,4 +183,10 @@ EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
 EMAIL_PORT = 25
 
+
+
+# cros
 CORS_ALLOW_ALL_ORIGINS = True
+
+# celery config
+CELERY_BROKER_URL = "redis://redis:6379/1"

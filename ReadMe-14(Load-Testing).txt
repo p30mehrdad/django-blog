@@ -27,7 +27,7 @@ volumes:
 docker-compose up -d
 # -> 127.0.0.1:8089
 
-#last docker compose:
+#last docker compose: (docker-compose(load-test).txt)
 master:
     image: locustio/locust
     ports:
@@ -50,5 +50,7 @@ master:
 # 14-3 [locustfile.py] update class / login users with jwt token and headers
 # def on_start -> when code run - use for login
 # 127.0.0.1:8089
+
+# important : don't mix "Load-Test branch" with "main branch"
 
 

@@ -1,5 +1,6 @@
 # install operiontion app (python , php , ...)
-FROM python:3.12
+FROM python:3.11-slim
+
 
 # set env
 ENV PYTHONDONTWRITEBYTECODE=1

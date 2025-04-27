@@ -1,20 +1,39 @@
-#version of docker-compose
 version: "3.9"
 
-#services
 services:
-  backend: # name of services that we need
-    build: . # find Dockerfile DIR
-    container_name: backend # set container_name
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
     ports:
-      - "8000:8000" # map porting <sys port>:<container port>
-    command: python manage.py runserver 0.0.0.0:8000 
-    # set many command with && sign
+    - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+
+  backend:
+    build: .
+    container_name: backend
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./core/:/app
+      - ./core:/app
+    ports:
+      - "8000:8000"
     environment:
       - SECRET_KEY=test
       - DEBUG=True
+    depends_on:
+      - redis
+  worker:
+    build: .
+    command: celery -A core worker -l INFO
+    depends_on:
+      - redis
+      - backend
+    volumes:
+      - ./core:/app
+    environment:
+    - SECRET_KEY=mysupersecretkey
+    - DEBUG=True
+  
   smtp4dev:
       image: rnwood/smtp4dev:v3
       restart: always
@@ -30,21 +49,6 @@ services:
           - smtp4dev-data:/smtp4dev
       environment:
         - ServerOptions__HostName=smtp4dev
-  master:
-    image: locustio/locust
-    ports:
-     - "8089:8089"
-    volumes:
-      - ./core/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://backend:8000/
-  
-  worker:
-    image: locustio/locust
-    volumes:
-      - ./core/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
 
 volumes:
-  smtp4dev-data:     
-
-# docker-compose up --build
+  smtp4dev-data:
